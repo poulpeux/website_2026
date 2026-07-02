@@ -52,6 +52,58 @@
         /* --- Back to Top Button --- */
         #back-to-top { position: fixed; bottom: 40px; right: 50px; background: #000; color: #fff; border: none; padding: 10px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.3s; z-index: 100; border-radius: 3px; }
         #back-to-top.visible { opacity: 1; visibility: visible; }
+
+        /* =========================================
+           RESPONSIVE DESIGN (Media Queries)
+           ========================================= */
+
+        /* TABLET ADJUSTMENTS */
+        @media (max-width: 900px) {
+            header { padding: 20px 30px; }
+            h1.site-title { font-size: 4.5rem; }
+            nav ul { gap: 30px; margin-right: 0; }
+            .text-content { padding: 40px 30px; }
+        }
+
+        /* SMARTPHONE ADJUSTMENTS */
+        @media (max-width: 600px) {
+            header { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                padding: 15px 20px; 
+            }
+            
+            h1.site-title { 
+                font-size: 3.5rem; 
+                margin-bottom: 15px; 
+            }
+            
+            nav ul { 
+                gap: 15px; 
+                flex-wrap: wrap; 
+            }
+            
+            nav a { font-size: 1rem; }
+            
+            .text-content { padding: 25px 20px; }
+            .text-content h2 { font-size: 2.2rem; }
+            .text-content p, .text-content li { font-size: 1.1rem; }
+
+            .reader-controls { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 15px; 
+            }
+            
+            .action-btn { font-size: 1.3rem; }
+
+            #back-to-top { 
+                bottom: 20px; 
+                right: 20px; 
+                padding: 8px 15px; 
+                font-size: 1rem; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -118,18 +170,20 @@
     <script>
         // --- 1. Slideshow Logic ---
         const images = [
-    "images/image_01.webp",
-    "images/image_02.webp",
-    "images/image_03.webp",
-    "images/image_04.webp",
-    "images/image_05.webp"
-    // Add as many as you like!
+            "images/image_01.webp",
+            "images/image_02.webp",
+            "images/image_03.webp",
+            "images/image_04.webp",
+            "images/image_05.webp"
+            // Add as many as you like!
         ];
         let currentIndex = 0;
         const imageElement = document.getElementById('portfolioImage');
         let slideshowTimer;
 
         function updateImage() {
+            // Added a quick safety check just in case the element hasn't loaded
+            if (!imageElement) return; 
             imageElement.classList.add('fade-out');
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % images.length;
