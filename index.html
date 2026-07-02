@@ -35,15 +35,40 @@
         .work-list { list-style: none; }
         .work-list li { border-bottom: 1px solid #ddd; padding: 15px 0; }
 
-        /* --- Text Reader UI --- */
-        .text-link { cursor: pointer; transition: opacity 0.2s ease; }
-        .text-link:hover { opacity: 0.5; }
-        #text-reader-view { display: none; position: relative; }
+        /* --- Shared UI (Texts & Videos) --- */
+        .list-link { cursor: pointer; transition: opacity 0.2s ease; }
+        .list-link:hover { opacity: 0.5; }
         
         .reader-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid #000; padding-bottom: 15px; }
         .action-btn { background: none; border: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; cursor: pointer; color: #000; text-decoration: none; letter-spacing: 1px; transition: opacity 0.2s ease; }
         .action-btn:hover { opacity: 0.5; }
+
+        /* --- Text Reader UI --- */
+        #text-reader-view { display: none; position: relative; }
         .reader-body p { margin-bottom: 25px; text-align: justify; }
+
+        /* --- Video Player UI --- */
+        #video-player-view { display: none; position: relative; }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* Forces a perfect 16:9 aspect ratio */
+            height: 0;
+            margin-bottom: 25px;
+            background-color: #000; /* Shows black while iframe loads */
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .video-description {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #333;
+            text-align: justify;
+        }
 
         /* --- Progress Bar --- */
         #progress-container { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: transparent; z-index: 100; display: none; }
@@ -56,8 +81,6 @@
         /* =========================================
            RESPONSIVE DESIGN (Media Queries)
            ========================================= */
-
-        /* TABLET ADJUSTMENTS */
         @media (max-width: 900px) {
             header { padding: 20px 30px; }
             h1.site-title { font-size: 4.5rem; }
@@ -65,50 +88,22 @@
             .text-content { padding: 40px 30px; }
         }
 
-        /* SMARTPHONE ADJUSTMENTS */
         @media (max-width: 600px) {
-            header { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                padding: 15px 20px; 
-            }
-            
-            h1.site-title { 
-                font-size: 3.5rem; 
-                margin-bottom: 15px; 
-            }
-            
-            nav ul { 
-                gap: 15px; 
-                flex-wrap: wrap; 
-            }
-            
+            header { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
+            h1.site-title { font-size: 3.5rem; margin-bottom: 15px; }
+            nav ul { gap: 15px; flex-wrap: wrap; }
             nav a { font-size: 1rem; }
-            
             .text-content { padding: 25px 20px; }
             .text-content h2 { font-size: 2.2rem; }
             .text-content p, .text-content li { font-size: 1.1rem; }
-
-            .reader-controls { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                gap: 15px; 
-            }
-            
+            .reader-controls { flex-direction: column; align-items: flex-start; gap: 15px; }
             .action-btn { font-size: 1.3rem; }
-
-            #back-to-top { 
-                bottom: 20px; 
-                right: 20px; 
-                padding: 8px 15px; 
-                font-size: 1rem; 
-            }
+            #back-to-top { bottom: 20px; right: 20px; padding: 8px 15px; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Progress Bar -->
     <div id="progress-container"><div id="progress-bar"></div></div>
 
     <div class="container">
@@ -128,17 +123,16 @@
         <main class="content-area">
             
             <section id="home-section" class="page-section active">
-                <!-- Points to the first image in your new folder -->
                 <img id="portfolioImage" src="images/image_01.webp" alt="Featured Work">
             </section>
 
+            <!-- TEXTS SECTION -->
             <section id="texts-section" class="page-section">
-                
                 <div class="text-content" id="texts-list-view">
                     <h2>Selected Texts</h2>
                     <ul class="work-list">
-                        <li class="text-link" onclick="openText('text1')"><strong>The Architecture of Memory</strong> - Essay, 2025</li>
-                        <li class="text-link" onclick="openText('text2')"><strong>Temporality in Silver Gelatin</strong> - Publication, 2024</li>
+                        <li class="list-link" onclick="openText('text1')"><strong>The Architecture of Memory</strong> - Essay, 2025</li>
+                        <li class="list-link" onclick="openText('text2')"><strong>Temporality in Silver Gelatin</strong> - Publication, 2024</li>
                     </ul>
                 </div>
 
@@ -148,18 +142,38 @@
                         <a id="download-link" href="#" download class="action-btn">DOWNLOAD PDF ↓</a>
                     </div>
                     <h2 id="reader-title">Title Placeholder</h2>
-                    <div id="reader-body" class="reader-body">
-                        <!-- External text will load here -->
+                    <div id="reader-body" class="reader-body"></div>
+                    <button id="back-to-top" onclick="scrollToTop()">↑ TOP</button>
+                </div>
+            </section>
+
+            <!-- VIDEOS SECTION -->
+            <section id="videos-section" class="page-section">
+                
+                <!-- View 1: List of Videos -->
+                <div class="text-content" id="videos-list-view">
+                    <h2>Selected Videos</h2>
+                    <!-- Javascript will automatically build list items here from your JSON file -->
+                    <ul class="work-list" id="dynamic-video-list"></ul>
+                </div>
+
+                <!-- View 2: Video Player -->
+                <div class="text-content" id="video-player-view">
+                    <div class="reader-controls">
+                        <button class="action-btn" onclick="closeVideo()">← BACK TO LIST</button>
+                    </div>
+                    <h2 id="video-title">Title</h2>
+                    
+                    <div class="video-wrapper">
+                        <!-- We leave src empty; JS will fill it with the correct video -->
+                        <iframe id="vimeo-player" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     
-                    <!-- Back to top button -->
-                    <button id="back-to-top" onclick="scrollToTop()">↑ TOP</button>
+                    <div id="video-description" class="video-description"></div>
                 </div>
 
             </section>
 
-            <!-- Other sections remain exactly the same... -->
-            <section id="videos-section" class="page-section"><div class="text-content"><h2>Videos</h2></div></section>
             <section id="work-section" class="page-section"><div class="text-content"><h2>Selected Works</h2></div></section>
             <section id="about-section" class="page-section"><div class="text-content"><h2>About</h2></div></section>
             <section id="cv-section" class="page-section"><div class="text-content"><h2>Curriculum Vitae</h2></div></section>
@@ -170,19 +184,14 @@
     <script>
         // --- 1. Slideshow Logic ---
         const images = [
-            "images/image_01.webp",
-            "images/image_02.webp",
-            "images/image_03.webp",
-            "images/image_04.webp",
-            "images/image_05.webp"
-            // Add as many as you like!
+            "images/image_01.webp", "images/image_02.webp", "images/image_03.webp",
+            "images/image_04.webp", "images/image_05.webp"
         ];
         let currentIndex = 0;
         const imageElement = document.getElementById('portfolioImage');
         let slideshowTimer;
 
         function updateImage() {
-            // Added a quick safety check just in case the element hasn't loaded
             if (!imageElement) return; 
             imageElement.classList.add('fade-out');
             setTimeout(() => {
@@ -198,9 +207,7 @@
         }
 
         document.getElementById('home-section').addEventListener('click', function() {
-            clearInterval(slideshowTimer);
-            updateImage();
-            startTimer();
+            clearInterval(slideshowTimer); updateImage(); startTimer();
         });
         startTimer();
 
@@ -212,29 +219,22 @@
             currentActive.classList.remove('active');
             document.getElementById(targetSectionId).classList.add('active');
 
+            // Manage background timers and videos
             if (targetSectionId === 'home-section') {
                 startTimer();
             } else {
                 clearInterval(slideshowTimer);
             }
 
-            if (currentActive.id === 'texts-section') {
-                setTimeout(closeText, 600); 
-            }
+            // Clean up states when leaving specific pages
+            if (currentActive.id === 'texts-section') { setTimeout(closeText, 600); }
+            if (currentActive.id === 'videos-section') { setTimeout(closeVideo, 600); }
         }
 
-        // --- 3. Text Reader Database (Links to files now) ---
+        // --- 3. Text Reader Database ---
         const textDatabase = {
-            'text1': {
-                title: "The Architecture of Memory",
-                pdfLink: "pdfs/architecture_memory.pdf",
-                filePath: "texts/text_01.html" // Points to your external file
-            },
-            'text2': {
-                title: "Temporality in Silver Gelatin",
-                pdfLink: "pdfs/temporality.pdf",
-                filePath: "texts/temporality.html" 
-            }
+            'text1': { title: "The Architecture of Memory", pdfLink: "pdfs/architecture_memory.pdf", filePath: "texts/text_01.html" },
+            'text2': { title: "Temporality in Silver Gelatin", pdfLink: "pdfs/temporality.pdf", filePath: "texts/temporality.html" }
         };
 
         const readerView = document.getElementById('text-reader-view');
@@ -244,23 +244,14 @@
 
         function openText(textId) {
             const data = textDatabase[textId];
-            
             document.getElementById('reader-title').innerText = data.title;
             document.getElementById('download-link').href = data.pdfLink;
             document.getElementById('reader-body').innerHTML = "<p>Loading text...</p>";
 
-            // Fetch the text from the external file
             fetch(data.filePath)
-                .then(response => {
-                    if (!response.ok) throw new Error("Could not load file.");
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('reader-body').innerHTML = html;
-                })
-                .catch(error => {
-                    document.getElementById('reader-body').innerHTML = `<p style="color:red;">Error: Make sure you are using a local server (like Live Server) to view external files.</p>`;
-                });
+                .then(response => { if (!response.ok) throw new Error(); return response.text(); })
+                .then(html => { document.getElementById('reader-body').innerHTML = html; })
+                .catch(error => { document.getElementById('reader-body').innerHTML = `<p style="color:red;">Error loading external file.</p>`; });
 
             document.getElementById('texts-list-view').style.display = 'none';
             readerView.style.display = 'block';
@@ -274,27 +265,56 @@
             document.getElementById('texts-list-view').style.display = 'block';
         }
 
-        // --- 4. Scrolling Features (Progress Bar & Back to Top) ---
         readerView.addEventListener('scroll', () => {
-            // Calculate progress bar
             const scrollTop = readerView.scrollTop;
             const scrollHeight = readerView.scrollHeight - readerView.clientHeight;
-            const scrollPercentage = (scrollTop / scrollHeight) * 100;
-            progressBar.style.width = scrollPercentage + "%";
-
-            // Show/Hide Back to Top button (shows after scrolling down 500px)
-            if (scrollTop > 500) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
+            progressBar.style.width = ((scrollTop / scrollHeight) * 100) + "%";
+            if (scrollTop > 500) { backToTopBtn.classList.add('visible'); } else { backToTopBtn.classList.remove('visible'); }
         });
 
-        function scrollToTop() {
-            readerView.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        function scrollToTop() { readerView.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        // --- 4. Video Player Logic ---
+        let videosDatabase = [];
+
+        // Automatically fetch and build the video list when the website loads
+        fetch('videos.json')
+            .then(response => response.json())
+            .then(data => {
+                videosDatabase = data;
+                const listContainer = document.getElementById('dynamic-video-list');
+                
+                // For each video in your JSON file, create a list item
+                data.forEach((vid, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'list-link';
+                    // Pass the index (0, 1, 2...) so the computer knows which video was clicked
+                    li.onclick = () => openVideo(index);
+                    li.innerHTML = `<strong>${vid.title}</strong> - ${vid.year}`;
+                    listContainer.appendChild(li);
+                });
+            })
+            .catch(error => console.log("Could not load videos.json. Make sure Live Server is running."));
+
+        function openVideo(index) {
+            const vid = videosDatabase[index];
+            document.getElementById('video-title').innerText = vid.title;
+            document.getElementById('video-description').innerHTML = `<p>${vid.description}</p>`;
+            
+            // Build the Vimeo link. The parameters at the end (color, title, byline) hide Vimeo's default branding for a cleaner look.
+            const vimeoUrl = `https://player.vimeo.com/video/${vid.vimeoId}?color=ffffff&title=0&byline=0&portrait=0`;
+            document.getElementById('vimeo-player').src = vimeoUrl;
+
+            document.getElementById('videos-list-view').style.display = 'none';
+            document.getElementById('video-player-view').style.display = 'block';
+            document.querySelector('#videos-section .text-content').scrollTop = 0;
+        }
+
+        function closeVideo() {
+            document.getElementById('video-player-view').style.display = 'none';
+            document.getElementById('videos-list-view').style.display = 'block';
+            // Wipe the src to stop the video from continuing to play in the background
+            document.getElementById('vimeo-player').src = "";
         }
     </script>
 </body>
