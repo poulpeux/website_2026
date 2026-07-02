@@ -76,7 +76,8 @@
         <main class="content-area">
             
             <section id="home-section" class="page-section active">
-                <img id="portfolioImage" src="https://images.unsplash.com/photo-1542317148-8b4bdccb33ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Featured Work">
+                <!-- Points to the first image in your new folder -->
+                <img id="portfolioImage" src="images/work_01.jpg" alt="Featured Work">
             </section>
 
             <section id="texts-section" class="page-section">
@@ -117,8 +118,12 @@
     <script>
         // --- 1. Slideshow Logic ---
         const images = [
-            "https://images.unsplash.com/photo-1542317148-8b4bdccb33ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-            "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+    "images/image_01.png",
+    "images/image_02.png",
+    "images/image_03.png",
+    "images/image_04.png",
+    "images/image_05.png"
+    // Add as many as you like!
         ];
         let currentIndex = 0;
         const imageElement = document.getElementById('portfolioImage');
