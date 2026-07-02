@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hugo Cuenot - Artist Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #ffffff; font-family: "Times New Roman", Times, serif; }
+        .container { display: flex; flex-direction: column; height: 100vh; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 25px 50px; background-color: #ffffff; flex-shrink: 0; z-index: 100; }
+        h1.site-title { font-family: 'Bebas Neue', sans-serif; font-size: 5.5rem; letter-spacing: 1px; color: #000000; line-height: 0.8; margin-top: 5px; cursor: pointer; }
+        nav ul { display: flex; list-style: none; gap: 60px; margin-right: 20px; }
+        nav a { text-decoration: none; color: #000000; font-size: 1.1rem; font-weight: 600; transition: opacity 0.2s ease; }
+        nav a:hover { opacity: 0.5; }
+
+        .content-area { flex-grow: 1; position: relative; width: 100%; }
+        .page-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; opacity: 0; visibility: hidden; transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out; }
+        .page-section.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        #home-section { cursor: pointer; }
+        #home-section img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: opacity 0.6s ease-in-out; }
+        .fade-out { opacity: 0; }
+
+        .text-content { padding: 50px; max-width: 800px; margin: 0 auto; height: 100%; overflow-y: auto; scrollbar-width: none; }
+        .text-content::-webkit-scrollbar { display: none; }
+        .text-content h2 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; margin-bottom: 20px; letter-spacing: 1px; }
+        .text-content p, .text-content li { font-size: 1.2rem; line-height: 1.6; margin-bottom: 15px; }
+        .work-list { list-style: none; }
+        .work-list li { border-bottom: 1px solid #ddd; padding: 15px 0; }
+
+        /* --- Text Reader UI --- */
+        .text-link { cursor: pointer; transition: opacity 0.2s ease; }
+        .text-link:hover { opacity: 0.5; }
+        #text-reader-view { display: none; position: relative; }
+        
+        .reader-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+        .action-btn { background: none; border: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; cursor: pointer; color: #000; text-decoration: none; letter-spacing: 1px; transition: opacity 0.2s ease; }
+        .action-btn:hover { opacity: 0.5; }
+        .reader-body p { margin-bottom: 25px; text-align: justify; }
+
+        /* --- Progress Bar --- */
+        #progress-container { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: transparent; z-index: 100; display: none; }
+        #progress-bar { height: 100%; background: #000; width: 0%; transition: width 0.1s; }
+
+        /* --- Back to Top Button --- */
+        #back-to-top { position: fixed; bottom: 40px; right: 50px; background: #000; color: #fff; border: none; padding: 10px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.3s; z-index: 100; border-radius: 3px; }
+        #back-to-top.visible { opacity: 1; visibility: visible; }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div id="progress-container"><div id="progress-bar"></div></div>
+
+    <div class="container">
+        <header>
+            <h1 class="site-title" onclick="switchPage('home-section')">HUGO CUENOT</h1>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="switchPage('texts-section')">Texts</a></li>
+                    <li><a href="#" onclick="switchPage('videos-section')">Videos</a></li>
+                    <li><a href="#" onclick="switchPage('work-section')">Work</a></li>
+                    <li><a href="#" onclick="switchPage('about-section')">About</a></li>
+                    <li><a href="#" onclick="switchPage('cv-section')">CV</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="content-area">
+            
+            <section id="home-section" class="page-section active">
+                <img id="portfolioImage" src="https://images.unsplash.com/photo-1542317148-8b4bdccb33ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Featured Work">
+            </section>
+
+            <section id="texts-section" class="page-section">
+                
+                <div class="text-content" id="texts-list-view">
+                    <h2>Selected Texts</h2>
+                    <ul class="work-list">
+                        <li class="text-link" onclick="openText('text1')"><strong>The Architecture of Memory</strong> - Essay, 2025</li>
+                        <li class="text-link" onclick="openText('text2')"><strong>Temporality in Silver Gelatin</strong> - Publication, 2024</li>
+                    </ul>
+                </div>
+
+                <div class="text-content" id="text-reader-view">
+                    <div class="reader-controls">
+                        <button class="action-btn" onclick="closeText()">← BACK TO LIST</button>
+                        <a id="download-link" href="#" download class="action-btn">DOWNLOAD PDF ↓</a>
+                    </div>
+                    <h2 id="reader-title">Title Placeholder</h2>
+                    <div id="reader-body" class="reader-body">
+                        <!-- External text will load here -->
+                    </div>
+                    
+                    <!-- Back to top button -->
+                    <button id="back-to-top" onclick="scrollToTop()">↑ TOP</button>
+                </div>
+
+            </section>
+
+            <!-- Other sections remain exactly the same... -->
+            <section id="videos-section" class="page-section"><div class="text-content"><h2>Videos</h2></div></section>
+            <section id="work-section" class="page-section"><div class="text-content"><h2>Selected Works</h2></div></section>
+            <section id="about-section" class="page-section"><div class="text-content"><h2>About</h2></div></section>
+            <section id="cv-section" class="page-section"><div class="text-content"><h2>Curriculum Vitae</h2></div></section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- 1. Slideshow Logic ---
+        const images = [
+            "https://images.unsplash.com/photo-1542317148-8b4bdccb33ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+            "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+        ];
+        let currentIndex = 0;
+        const imageElement = document.getElementById('portfolioImage');
+        let slideshowTimer;
+
+        function updateImage() {
+            imageElement.classList.add('fade-out');
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % images.length;
+                imageElement.src = images[currentIndex];
+                imageElement.classList.remove('fade-out');
+            }, 600);
+        }
+
+        function startTimer() {
+            clearInterval(slideshowTimer);
+            slideshowTimer = setInterval(updateImage, 6000);
+        }
+
+        document.getElementById('home-section').addEventListener('click', function() {
+            clearInterval(slideshowTimer);
+            updateImage();
+            startTimer();
+        });
+        startTimer();
+
+        // --- 2. Page Navigation Logic ---
+        function switchPage(targetSectionId) {
+            const currentActive = document.querySelector('.page-section.active');
+            if (currentActive.id === targetSectionId) return;
+
+            currentActive.classList.remove('active');
+            document.getElementById(targetSectionId).classList.add('active');
+
+            if (targetSectionId === 'home-section') {
+                startTimer();
+            } else {
+                clearInterval(slideshowTimer);
+            }
+
+            if (currentActive.id === 'texts-section') {
+                setTimeout(closeText, 600); 
+            }
+        }
+
+        // --- 3. Text Reader Database (Links to files now) ---
+        const textDatabase = {
+            'text1': {
+                title: "The Architecture of Memory",
+                pdfLink: "pdfs/architecture_memory.pdf",
+                filePath: "texts/architecture_memory.html" // Points to your external file
+            },
+            'text2': {
+                title: "Temporality in Silver Gelatin",
+                pdfLink: "pdfs/temporality.pdf",
+                filePath: "texts/temporality.html" 
+            }
+        };
+
+        const readerView = document.getElementById('text-reader-view');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        function openText(textId) {
+            const data = textDatabase[textId];
+            
+            document.getElementById('reader-title').innerText = data.title;
+            document.getElementById('download-link').href = data.pdfLink;
+            document.getElementById('reader-body').innerHTML = "<p>Loading text...</p>";
+
+            // Fetch the text from the external file
+            fetch(data.filePath)
+                .then(response => {
+                    if (!response.ok) throw new Error("Could not load file.");
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('reader-body').innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('reader-body').innerHTML = `<p style="color:red;">Error: Make sure you are using a local server (like Live Server) to view external files.</p>`;
+                });
+
+            document.getElementById('texts-list-view').style.display = 'none';
+            readerView.style.display = 'block';
+            progressContainer.style.display = 'block';
+            readerView.scrollTop = 0;
+        }
+
+        function closeText() {
+            readerView.style.display = 'none';
+            progressContainer.style.display = 'none';
+            document.getElementById('texts-list-view').style.display = 'block';
+        }
+
+        // --- 4. Scrolling Features (Progress Bar & Back to Top) ---
+        readerView.addEventListener('scroll', () => {
+            // Calculate progress bar
+            const scrollTop = readerView.scrollTop;
+            const scrollHeight = readerView.scrollHeight - readerView.clientHeight;
+            const scrollPercentage = (scrollTop / scrollHeight) * 100;
+            progressBar.style.width = scrollPercentage + "%";
+
+            // Show/Hide Back to Top button (shows after scrolling down 500px)
+            if (scrollTop > 500) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        function scrollToTop() {
+            readerView.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
