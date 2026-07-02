@@ -88,17 +88,35 @@
             .text-content { padding: 40px 30px; }
         }
 
+        /* SMARTPHONE ADJUSTMENTS */
         @media (max-width: 600px) {
             header { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
             h1.site-title { font-size: 3.5rem; margin-bottom: 15px; }
             nav ul { gap: 15px; flex-wrap: wrap; }
             nav a { font-size: 1rem; }
-            .text-content { padding: 25px 20px; }
+            
+            /* ADDED: 120px of padding to the bottom so the text isn't cut off by mobile browser bars */
+            .text-content { padding: 25px 20px 120px 20px; }
             .text-content h2 { font-size: 2.2rem; }
             .text-content p, .text-content li { font-size: 1.1rem; }
+            
             .reader-controls { flex-direction: column; align-items: flex-start; gap: 15px; }
             .action-btn { font-size: 1.3rem; }
             #back-to-top { bottom: 20px; right: 20px; padding: 8px 15px; font-size: 1rem; }
+
+            /* ADDED: Logic to rotate the image 90 degrees counter-clockwise safely */
+            #home-section {
+                overflow: hidden; /* Prevents the rotated image from stretching the screen */
+            }
+            #portfolioImage {
+                width: 100vh;       /* Forces the image width to equal the phone height */
+                height: 100vw;      /* Forces the image height to equal the phone width */
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                /* Centers the image perfectly, then rotates it -90 degrees */
+                transform: translate(-50%, -50%) rotate(-90deg); 
+            }
         }
     </style>
 </head>
