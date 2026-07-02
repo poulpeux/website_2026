@@ -299,9 +299,13 @@
         function openVideo(index) {
             const vid = videosDatabase[index];
             document.getElementById('video-title').innerText = vid.title;
-            document.getElementById('video-description').innerHTML = `<p>${vid.description}</p>`;
             
-            // Build the Vimeo link. The parameters at the end (color, title, byline) hide Vimeo's default branding for a cleaner look.
+            // This injects the italic medium/year, followed by your formatted description
+            document.getElementById('video-description').innerHTML = `
+                <p style="font-style: italic; margin-bottom: 20px;">${vid.medium}, ${vid.year}</p>
+                ${vid.description}
+            `;
+            
             const vimeoUrl = `https://player.vimeo.com/video/${vid.vimeoId}?color=ffffff&title=0&byline=0&portrait=0`;
             document.getElementById('vimeo-player').src = vimeoUrl;
 
