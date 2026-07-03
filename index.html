@@ -109,13 +109,15 @@
                 overflow: hidden; /* Prevents the rotated image from stretching the screen */
             }
             #portfolioImage {
-                width: 100vh;       /* Forces the image width to equal the phone height */
-                height: 100vw;      /* Forces the image height to equal the phone width */
+                /* Calculates the exact height of the phone minus the header (~120px) */
+                width: calc(100vh - 120px); 
+                height: 100vw;      
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                /* Centers the image perfectly, then rotates it -90 degrees */
-                transform: translate(-50%, -50%) rotate(-90deg); 
+                transform: translate(-50%, -50%) rotate(-90deg);
+                /* Ensures the image strictly fills this newly calculated space */
+                object-fit: cover; 
             }
         }
     </style>
