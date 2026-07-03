@@ -1,0 +1,26 @@
+[
+    {
+        "title": "A strip of fruitful land of our own",
+        "medium": "paper, sound",
+        "year": "2026",
+        "images": [
+            "images/strip_01.webp",
+            "images/strip_02.webp",
+            "images/strip_03.webp",
+"images/strip_04.webp",
+"images/strip_05.webp",
+"images/strip_06.webp"
+        ],
+        "description": "<p>Mixing sound and sculpture, <em>a strip of fruitful land of our own</em> is an installation of three paper windows with dedicated texts that can be heard near them. Made out of delicate Xuan paper, the frail windows are a reproduction of the artist’s home windows, brining his fragile perception into the space. The three texts, read in three different voices, and coming from three different timelines weave stories of displacement, war, desire and queerness, bringing a vision of the world to be seen and heard through these veil-thin Swiss windows. As the fragility of our perception of the world is constantly challenged by the stories that we’re told, now is the time to listen to them. </p>"
+    },
+    {
+        "title": "Untitled Series",
+        "medium": "Silver gelatin prints",
+        "year": "2024",
+        "images": [
+            "images/untitled_01.webp",
+            "images/untitled_02.webp"
+        ],
+        "description": "<p>A series exploring architectural decay. Printed on baryta paper to enhance the deep blacks and metallic textures.</p>"
+    }
+]
