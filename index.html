@@ -68,18 +68,16 @@
             width: 100%;
             object-fit: contain; 
             display: block;
-            /* Added transition for smooth image swapping */
             transition: opacity 0.4s ease-in-out;
         }
         .carousel-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: transparent; /* Removed the white box */
+            background: transparent; 
             border: none;
-            font-size: 2.5rem; /* Made slightly larger */
+            font-size: 2.5rem; 
             color: #000;
-            /* Subtle white glow ensures arrows are visible over dark artworks */
             text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.8);
             cursor: pointer;
             padding: 10px 15px;
@@ -87,7 +85,7 @@
             z-index: 10;
         }
         .carousel-btn:hover {
-            opacity: 0.5; /* Replaced background color change with an opacity fade */
+            opacity: 0.5; 
         }
         .carousel-btn.prev { left: 10px; }
         .carousel-btn.next { right: 10px; }
@@ -127,6 +125,9 @@
             .action-btn { font-size: 1.3rem; }
             #back-to-top { bottom: 20px; right: 20px; padding: 8px 15px; font-size: 1rem; }
             
+            /* Reduced the size of the arrows for mobile screens */
+            .carousel-btn { font-size: 1.5rem; }
+            
             #portfolioImage {
                 width: calc(100vh - 120px); 
                 height: 100vw;      
@@ -150,7 +151,7 @@
                 <ul>
                     <li><a href="#" onclick="switchPage('texts-section')">Texts</a></li>
                     <li><a href="#" onclick="switchPage('videos-section')">Videos</a></li>
-                    <li><a href="#" onclick="switchPage('work-section')">Work</a></li>
+                    <li><a href="#" onclick="switchPage('work-section')">Works</a></li>
                     <li><a href="#" onclick="switchPage('about-section')">About</a></li>
                     <li><a href="#" onclick="switchPage('cv-section')">CV</a></li>
                 </ul>
@@ -160,7 +161,7 @@
         <main class="content-area">
             
             <section id="home-section" class="page-section active">
-                <img id="portfolioImage" src="images/image_01.webp" alt="Featured Work">
+                <img id="portfolioImage" src="images/image_01.webp" alt="">
             </section>
 
             <!-- TEXTS SECTION -->
@@ -379,7 +380,6 @@
             document.getElementById('work-title').innerText = work.title;
             document.getElementById('work-description').innerHTML = `<p style="font-style: italic; margin-bottom: 20px;">${work.medium}, ${work.year}</p>${work.description}`;
             
-            // Preload all images for this specific work so they don't flash when clicking Next/Prev
             work.images.forEach(src => { 
                 const img = new Image(); 
                 img.src = src; 
@@ -388,7 +388,6 @@
             currentWorkImages = work.images;
             currentCarouselIndex = 0;
             
-            // Instantly load the first image without fading it
             document.getElementById('carousel-main-image').src = currentWorkImages[currentCarouselIndex];
             document.getElementById('carousel-main-image').classList.remove('fade-out');
             
@@ -404,19 +403,15 @@
         function changeImage(direction) {
             const carouselImg = document.getElementById('carousel-main-image');
             
-            // 1. Fade the current image out
             carouselImg.classList.add('fade-out');
             
-            // 2. Wait for the 400ms fade transition to complete
             setTimeout(() => {
                 currentCarouselIndex += direction;
                 if (currentCarouselIndex < 0) currentCarouselIndex = currentWorkImages.length - 1;
                 if (currentCarouselIndex >= currentWorkImages.length) currentCarouselIndex = 0;
                 
-                // Swap the image source while it is invisible
                 updateCarouselDOM();
                 
-                // Remove the fade-out class to transition it back in
                 carouselImg.classList.remove('fade-out');
             }, 400); 
         }
