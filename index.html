@@ -200,22 +200,47 @@
     </div>
 
     <script>
-        // --- 1. Slideshow Logic ---
+// --- 1. Slideshow Logic ---
         const images = [
-            "images/image_01.webp", "images/image_02.webp", "images/image_03.webp",
-            "images/image_04.webp", "images/image_05.webp"
+            "images/image_01.webp",
+            "images/image_02.webp",
+            "images/image_03.webp",
+            "images/image_04.webp",
+            "images/image_05.webp"
         ];
+
+        // NEW: Preload all images in the background as soon as the site opens
+        images.forEach(src => {
+            const preloadImg = new Image();
+            preloadImg.src = src;
+        });
+
         let currentIndex = 0;
         const imageElement = document.getElementById('portfolioImage');
         let slideshowTimer;
 
         function updateImage() {
             if (!imageElement) return; 
+            
+            // 1. Start fading out the current image
             imageElement.classList.add('fade-out');
+            
+            // 2. Wait 600ms for the fade-out CSS animation to finish
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % images.length;
-                imageElement.src = images[currentIndex];
-                imageElement.classList.remove('fade-out');
+                
+                // 3. Create a temporary image object in memory
+                const tempLoader = new Image();
+                
+                // 4. WAIT for it to fully load/decode before touching the screen
+                tempLoader.onload = () => {
+                    imageElement.src = tempLoader.src;
+                    imageElement.classList.remove('fade-out'); // Start fade-in safely
+                };
+                
+                // Trigger the load
+                tempLoader.src = images[currentIndex];
+                
             }, 600);
         }
 
@@ -225,7 +250,9 @@
         }
 
         document.getElementById('home-section').addEventListener('click', function() {
-            clearInterval(slideshowTimer); updateImage(); startTimer();
+            clearInterval(slideshowTimer);
+            updateImage();
+            startTimer();
         });
         startTimer();
 
