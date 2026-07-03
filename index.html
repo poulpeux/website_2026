@@ -24,8 +24,8 @@
         .page-section { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; opacity: 0; visibility: hidden; transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out; }
         .page-section.active { opacity: 1; visibility: visible; z-index: 10; }
 
-        #home-section { cursor: pointer; }
-        #home-section img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: opacity 0.6s ease-in-out; }
+        #home-section { cursor: pointer; overflow: hidden; }
+        #portfolioImage { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transition: opacity 0.6s ease-in-out; }
         .fade-out { opacity: 0; }
 
         .text-content { padding: 50px; max-width: 800px; margin: 0 auto; height: 100%; overflow-y: auto; scrollbar-width: none; }
@@ -35,46 +35,64 @@
         .work-list { list-style: none; }
         .work-list li { border-bottom: 1px solid #ddd; padding: 15px 0; }
 
-        /* --- Shared UI (Texts & Videos) --- */
+        /* --- Shared UI (Texts, Videos, Works) --- */
         .list-link { cursor: pointer; transition: opacity 0.2s ease; }
         .list-link:hover { opacity: 0.5; }
         
         .reader-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid #000; padding-bottom: 15px; }
         .action-btn { background: none; border: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; cursor: pointer; color: #000; text-decoration: none; letter-spacing: 1px; transition: opacity 0.2s ease; }
         .action-btn:hover { opacity: 0.5; }
+        .description-text p { margin-bottom: 25px; text-align: justify; }
 
-        /* --- Text Reader UI --- */
-        #text-reader-view { display: none; position: relative; }
-        .reader-body p { margin-bottom: 25px; text-align: justify; }
+        /* --- Views Hidden by Default --- */
+        #text-reader-view, #video-player-view, #work-detail-view { display: none; position: relative; }
 
-        /* --- Video Player UI --- */
-        #video-player-view { display: none; position: relative; }
-        .video-wrapper {
+        /* --- Video Specific --- */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; margin-bottom: 25px; background-color: #000; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* --- Carousel Specific (Works) --- */
+        .carousel-container {
             position: relative;
-            padding-bottom: 56.25%; /* Forces a perfect 16:9 aspect ratio */
-            height: 0;
-            margin-bottom: 25px;
-            background-color: #000; /* Shows black while iframe loads */
-        }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
+            margin-bottom: 25px;
+            background-color: #f9f9f9; /* Subtle background to frame images that don't fill the width */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .video-description {
+        .carousel-img {
+            max-height: 70vh; /* Prevents portrait images from becoming massively tall */
+            width: 100%;
+            object-fit: contain; /* Ensures the whole artwork is visible, no cropping */
+            display: block;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px 15px;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        .carousel-btn:hover { background: #fff; }
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+        .image-counter {
+            text-align: center;
+            font-family: 'Bebas Neue', sans-serif;
             font-size: 1.2rem;
-            line-height: 1.6;
-            color: #333;
-            text-align: justify;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
         }
 
-        /* --- Progress Bar --- */
+        /* --- Progress Bar & Back to Top --- */
         #progress-container { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: transparent; z-index: 100; display: none; }
         #progress-bar { height: 100%; background: #000; width: 0%; transition: width 0.1s; }
-
-        /* --- Back to Top Button --- */
         #back-to-top { position: fixed; bottom: 40px; right: 50px; background: #000; color: #fff; border: none; padding: 10px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 1px; cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.3s; z-index: 100; border-radius: 3px; }
         #back-to-top.visible { opacity: 1; visibility: visible; }
 
@@ -88,35 +106,25 @@
             .text-content { padding: 40px 30px; }
         }
 
-        /* SMARTPHONE ADJUSTMENTS */
         @media (max-width: 600px) {
             header { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
             h1.site-title { font-size: 3.5rem; margin-bottom: 15px; }
             nav ul { gap: 15px; flex-wrap: wrap; }
             nav a { font-size: 1rem; }
-            
-            /* ADDED: 120px of padding to the bottom so the text isn't cut off by mobile browser bars */
             .text-content { padding: 25px 20px 120px 20px; }
             .text-content h2 { font-size: 2.2rem; }
             .text-content p, .text-content li { font-size: 1.1rem; }
-            
             .reader-controls { flex-direction: column; align-items: flex-start; gap: 15px; }
             .action-btn { font-size: 1.3rem; }
             #back-to-top { bottom: 20px; right: 20px; padding: 8px 15px; font-size: 1rem; }
-
-            /* ADDED: Logic to rotate the image 90 degrees counter-clockwise safely */
-            #home-section {
-                overflow: hidden; /* Prevents the rotated image from stretching the screen */
-            }
+            
             #portfolioImage {
-                /* Calculates the exact height of the phone minus the header (~120px) */
                 width: calc(100vh - 120px); 
                 height: 100vw;      
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                transform: translate(-50%, -50%);
-                /* Ensures the image strictly fills this newly calculated space */
+                transform: translate(-50%, -50%) rotate(-90deg);
                 object-fit: cover; 
             }
         }
@@ -146,7 +154,6 @@
                 <img id="portfolioImage" src="images/image_01.webp" alt="Featured Work">
             </section>
 
-            <!-- TEXTS SECTION -->
             <section id="texts-section" class="page-section">
                 <div class="text-content" id="texts-list-view">
                     <h2>Selected Texts</h2>
@@ -155,46 +162,58 @@
                         <li class="list-link" onclick="openText('text2')"><strong>Temporality in Silver Gelatin</strong> - Publication, 2024</li>
                     </ul>
                 </div>
-
                 <div class="text-content" id="text-reader-view">
                     <div class="reader-controls">
                         <button class="action-btn" onclick="closeText()">← BACK TO LIST</button>
                         <a id="download-link" href="#" download class="action-btn">DOWNLOAD PDF ↓</a>
                     </div>
-                    <h2 id="reader-title">Title Placeholder</h2>
-                    <div id="reader-body" class="reader-body"></div>
+                    <h2 id="reader-title">Title</h2>
+                    <div id="reader-body" class="description-text"></div>
                     <button id="back-to-top" onclick="scrollToTop()">↑ TOP</button>
                 </div>
             </section>
 
-            <!-- VIDEOS SECTION -->
             <section id="videos-section" class="page-section">
-                
-                <!-- View 1: List of Videos -->
                 <div class="text-content" id="videos-list-view">
                     <h2>Selected Videos</h2>
-                    <!-- Javascript will automatically build list items here from your JSON file -->
                     <ul class="work-list" id="dynamic-video-list"></ul>
                 </div>
-
-                <!-- View 2: Video Player -->
                 <div class="text-content" id="video-player-view">
-                    <div class="reader-controls">
-                        <button class="action-btn" onclick="closeVideo()">← BACK TO LIST</button>
-                    </div>
+                    <div class="reader-controls"><button class="action-btn" onclick="closeVideo()">← BACK TO LIST</button></div>
                     <h2 id="video-title">Title</h2>
-                    
                     <div class="video-wrapper">
-                        <!-- We leave src empty; JS will fill it with the correct video -->
                         <iframe id="vimeo-player" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    
-                    <div id="video-description" class="video-description"></div>
+                    <div id="video-description" class="description-text"></div>
                 </div>
-
             </section>
 
-            <section id="work-section" class="page-section"><div class="text-content"><h2>Selected Works</h2></div></section>
+            <section id="work-section" class="page-section">
+                
+                <div class="text-content" id="works-list-view">
+                    <h2>Selected Works</h2>
+                    <ul class="work-list" id="dynamic-work-list"></ul>
+                </div>
+
+                <div class="text-content" id="work-detail-view">
+                    <div class="reader-controls">
+                        <button class="action-btn" onclick="closeWork()">← BACK TO LIST</button>
+                    </div>
+                    
+                    <h2 id="work-title">Title</h2>
+                    
+                    <div class="carousel-container">
+                        <button class="carousel-btn prev" id="carousel-prev" onclick="changeImage(-1)">&#10094;</button>
+                        <img id="carousel-main-image" class="carousel-img" src="" alt="Artwork">
+                        <button class="carousel-btn next" id="carousel-next" onclick="changeImage(1)">&#10095;</button>
+                    </div>
+                    
+                    <div class="image-counter" id="carousel-counter">1 / 1</div>
+                    <div id="work-description" class="description-text"></div>
+                </div>
+                
+            </section>
+
             <section id="about-section" class="page-section"><div class="text-content"><h2>About</h2></div></section>
             <section id="cv-section" class="page-section"><div class="text-content"><h2>Curriculum Vitae</h2></div></section>
 
@@ -202,63 +221,36 @@
     </div>
 
     <script>
-// --- 1. Slideshow Logic ---
+        // --- 1. Main Slideshow Logic ---
         const images = [
-            "images/image_01.webp",
-            "images/image_02.webp",
-            "images/image_03.webp",
-            "images/image_04.webp",
-            "images/image_05.webp"
+            "images/image_01.webp", "images/image_02.webp", "images/image_03.webp",
+            "images/image_04.webp", "images/image_05.webp"
         ];
 
-        // NEW: Preload all images in the background as soon as the site opens
-        images.forEach(src => {
-            const preloadImg = new Image();
-            preloadImg.src = src;
-        });
-
+        images.forEach(src => { const img = new Image(); img.src = src; });
         let currentIndex = 0;
         const imageElement = document.getElementById('portfolioImage');
         let slideshowTimer;
 
         function updateImage() {
             if (!imageElement) return; 
-            
-            // 1. Start fading out the current image
             imageElement.classList.add('fade-out');
-            
-            // 2. Wait 600ms for the fade-out CSS animation to finish
             setTimeout(() => {
                 currentIndex = (currentIndex + 1) % images.length;
-                
-                // 3. Create a temporary image object in memory
                 const tempLoader = new Image();
-                
-                // 4. WAIT for it to fully load/decode before touching the screen
                 tempLoader.onload = () => {
                     imageElement.src = tempLoader.src;
-                    imageElement.classList.remove('fade-out'); // Start fade-in safely
+                    imageElement.classList.remove('fade-out');
                 };
-                
-                // Trigger the load
                 tempLoader.src = images[currentIndex];
-                
             }, 600);
         }
 
-        function startTimer() {
-            clearInterval(slideshowTimer);
-            slideshowTimer = setInterval(updateImage, 6000);
-        }
-
-        document.getElementById('home-section').addEventListener('click', function() {
-            clearInterval(slideshowTimer);
-            updateImage();
-            startTimer();
-        });
+        function startTimer() { clearInterval(slideshowTimer); slideshowTimer = setInterval(updateImage, 6000); }
+        document.getElementById('home-section').addEventListener('click', function() { clearInterval(slideshowTimer); updateImage(); startTimer(); });
         startTimer();
 
-        // --- 2. Page Navigation Logic ---
+        // --- 2. Page Navigation ---
         function switchPage(targetSectionId) {
             const currentActive = document.querySelector('.page-section.active');
             if (currentActive.id === targetSectionId) return;
@@ -266,106 +258,155 @@
             currentActive.classList.remove('active');
             document.getElementById(targetSectionId).classList.add('active');
 
-            // Manage background timers and videos
-            if (targetSectionId === 'home-section') {
-                startTimer();
-            } else {
-                clearInterval(slideshowTimer);
-            }
+            if (targetSectionId === 'home-section') { startTimer(); } 
+            else { clearInterval(slideshowTimer); }
 
-            // Clean up states when leaving specific pages
+            // Cleanup hidden views
             if (currentActive.id === 'texts-section') { setTimeout(closeText, 600); }
             if (currentActive.id === 'videos-section') { setTimeout(closeVideo, 600); }
+            if (currentActive.id === 'work-section') { setTimeout(closeWork, 600); }
         }
 
-        // --- 3. Text Reader Database ---
+        // --- 3. Text Logic ---
         const textDatabase = {
             'text1': { title: "The Architecture of Memory", pdfLink: "pdfs/architecture_memory.pdf", filePath: "texts/text_01.html" },
             'text2': { title: "Temporality in Silver Gelatin", pdfLink: "pdfs/temporality.pdf", filePath: "texts/temporality.html" }
         };
-
         const readerView = document.getElementById('text-reader-view');
-        const progressBar = document.getElementById('progress-bar');
-        const progressContainer = document.getElementById('progress-container');
-        const backToTopBtn = document.getElementById('back-to-top');
-
+        
         function openText(textId) {
             const data = textDatabase[textId];
             document.getElementById('reader-title').innerText = data.title;
             document.getElementById('download-link').href = data.pdfLink;
-            document.getElementById('reader-body').innerHTML = "<p>Loading text...</p>";
-
+            document.getElementById('reader-body').innerHTML = "<p>Loading...</p>";
             fetch(data.filePath)
-                .then(response => { if (!response.ok) throw new Error(); return response.text(); })
-                .then(html => { document.getElementById('reader-body').innerHTML = html; })
-                .catch(error => { document.getElementById('reader-body').innerHTML = `<p style="color:red;">Error loading external file.</p>`; });
-
+                .then(r => r.text())
+                .then(html => { document.getElementById('reader-body').innerHTML = html; });
             document.getElementById('texts-list-view').style.display = 'none';
             readerView.style.display = 'block';
-            progressContainer.style.display = 'block';
+            document.getElementById('progress-container').style.display = 'block';
             readerView.scrollTop = 0;
         }
-
         function closeText() {
             readerView.style.display = 'none';
-            progressContainer.style.display = 'none';
+            document.getElementById('progress-container').style.display = 'none';
             document.getElementById('texts-list-view').style.display = 'block';
         }
 
-        readerView.addEventListener('scroll', () => {
-            const scrollTop = readerView.scrollTop;
-            const scrollHeight = readerView.scrollHeight - readerView.clientHeight;
-            progressBar.style.width = ((scrollTop / scrollHeight) * 100) + "%";
-            if (scrollTop > 500) { backToTopBtn.classList.add('visible'); } else { backToTopBtn.classList.remove('visible'); }
+        // Progress bar scrolling logic
+        [readerView, document.querySelector('#work-detail-view')].forEach(view => {
+            view.addEventListener('scroll', (e) => {
+                const target = e.target;
+                const scrollHeight = target.scrollHeight - target.clientHeight;
+                if(scrollHeight > 0) {
+                    document.getElementById('progress-bar').style.width = ((target.scrollTop / scrollHeight) * 100) + "%";
+                }
+                const btn = document.getElementById('back-to-top');
+                if (target.scrollTop > 500) { btn.classList.add('visible'); } else { btn.classList.remove('visible'); }
+            });
         });
+        function scrollToTop() {
+            const activeView = document.querySelector('.page-section.active .text-content[style*="display: block"]');
+            if(activeView) activeView.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-        function scrollToTop() { readerView.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        // --- 4. Video Player Logic ---
+        // --- 4. Video Logic ---
         let videosDatabase = [];
-
-        // Automatically fetch and build the video list when the website loads
         fetch('videos.json')
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 videosDatabase = data;
-                const listContainer = document.getElementById('dynamic-video-list');
-                
-                // For each video in your JSON file, create a list item
+                const list = document.getElementById('dynamic-video-list');
                 data.forEach((vid, index) => {
                     const li = document.createElement('li');
                     li.className = 'list-link';
-                    // Pass the index (0, 1, 2...) so the computer knows which video was clicked
                     li.onclick = () => openVideo(index);
                     li.innerHTML = `<strong>${vid.title}</strong> - ${vid.year}`;
-                    listContainer.appendChild(li);
+                    list.appendChild(li);
                 });
-            })
-            .catch(error => console.log("Could not load videos.json. Make sure Live Server is running."));
+            }).catch(e => console.log("videos.json not found"));
 
         function openVideo(index) {
             const vid = videosDatabase[index];
             document.getElementById('video-title').innerText = vid.title;
-            
-            // This injects the italic medium/year, followed by your formatted description
-            document.getElementById('video-description').innerHTML = `
-                <p style="font-style: italic; margin-bottom: 20px;">${vid.medium}, ${vid.year}</p>
-                ${vid.description}
-            `;
-            
-            const vimeoUrl = `https://player.vimeo.com/video/${vid.vimeoId}?color=ffffff&title=0&byline=0&portrait=0`;
-            document.getElementById('vimeo-player').src = vimeoUrl;
-
+            document.getElementById('video-description').innerHTML = `<p style="font-style: italic; margin-bottom: 20px;">${vid.medium}, ${vid.year}</p>${vid.description}`;
+            document.getElementById('vimeo-player').src = `https://player.vimeo.com/video/${vid.vimeoId}?color=ffffff&title=0&byline=0&portrait=0`;
             document.getElementById('videos-list-view').style.display = 'none';
             document.getElementById('video-player-view').style.display = 'block';
-            document.querySelector('#videos-section .text-content').scrollTop = 0;
+            document.querySelector('#video-player-view').scrollTop = 0;
         }
-
         function closeVideo() {
             document.getElementById('video-player-view').style.display = 'none';
             document.getElementById('videos-list-view').style.display = 'block';
-            // Wipe the src to stop the video from continuing to play in the background
             document.getElementById('vimeo-player').src = "";
+        }
+
+
+        // --- 5. Works Carousel Logic ---
+        let worksDatabase = [];
+        let currentWorkImages = [];
+        let currentCarouselIndex = 0;
+
+        fetch('works.json')
+            .then(r => r.json())
+            .then(data => {
+                worksDatabase = data;
+                const list = document.getElementById('dynamic-work-list');
+                data.forEach((work, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'list-link';
+                    li.onclick = () => openWork(index);
+                    li.innerHTML = `<strong>${work.title}</strong> - ${work.year}`;
+                    list.appendChild(li);
+                });
+            }).catch(e => console.log("works.json not found"));
+
+        function openWork(index) {
+            const work = worksDatabase[index];
+            document.getElementById('work-title').innerText = work.title;
+            document.getElementById('work-description').innerHTML = `<p style="font-style: italic; margin-bottom: 20px;">${work.medium}, ${work.year}</p>${work.description}`;
+            
+            // Set up the carousel
+            currentWorkImages = work.images;
+            currentCarouselIndex = 0;
+            updateCarouselDOM();
+
+            document.getElementById('works-list-view').style.display = 'none';
+            const detailView = document.getElementById('work-detail-view');
+            detailView.style.display = 'block';
+            document.getElementById('progress-container').style.display = 'block';
+            detailView.scrollTop = 0;
+        }
+
+        function changeImage(direction) {
+            currentCarouselIndex += direction;
+            // Loop back to start/end if we click past the limits
+            if (currentCarouselIndex < 0) currentCarouselIndex = currentWorkImages.length - 1;
+            if (currentCarouselIndex >= currentWorkImages.length) currentCarouselIndex = 0;
+            updateCarouselDOM();
+        }
+
+        function updateCarouselDOM() {
+            document.getElementById('carousel-main-image').src = currentWorkImages[currentCarouselIndex];
+            document.getElementById('carousel-counter').innerText = `${currentCarouselIndex + 1} / ${currentWorkImages.length}`;
+            
+            // Hide arrows if there is only 1 image
+            const btnPrev = document.getElementById('carousel-prev');
+            const btnNext = document.getElementById('carousel-next');
+            if (currentWorkImages.length <= 1) {
+                btnPrev.style.display = 'none';
+                btnNext.style.display = 'none';
+            } else {
+                btnPrev.style.display = 'block';
+                btnNext.style.display = 'block';
+            }
+        }
+
+        function closeWork() {
+            document.getElementById('work-detail-view').style.display = 'none';
+            document.getElementById('progress-container').style.display = 'none';
+            document.getElementById('works-list-view').style.display = 'block';
         }
     </script>
 </body>
