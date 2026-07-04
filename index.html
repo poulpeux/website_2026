@@ -386,31 +386,45 @@
                 });
             }).catch(e => console.log("works.json not found"));
 
-        function openWork(index) {
+       function openWork(index) {
             const work = worksDatabase[index];
             document.getElementById('work-title').innerText = work.title;
             document.getElementById('work-description').innerHTML = `<p style="font-style: italic; margin-bottom: 20px;">${work.medium}, ${work.year}</p>${work.description}`;
             
+            currentWorkImages = work.images;
+            currentCarouselIndex = 0;
+            
+            const carouselImg = document.getElementById('carousel-main-image');
+            
+            // 1. Ensure the image is hidden before we start swapping
+            carouselImg.classList.add('fade-out');
+
+            // 2. Safely load the first image of the new project
+            const tempLoader = new Image();
+            tempLoader.onload = () => {
+                carouselImg.src = tempLoader.src;
+                updateCarouselDOM();
+
+                // 3. Switch the views only AFTER the image is ready
+                document.getElementById('works-list-view').style.display = 'none';
+                const detailView = document.getElementById('work-detail-view');
+                detailView.style.display = 'block';
+                document.getElementById('progress-container').style.display = 'block';
+                detailView.scrollTop = 0;
+
+                // 4. Safely fade the new image in with a tiny delay so the browser can catch up
+                setTimeout(() => {
+                    carouselImg.classList.remove('fade-out');
+                }, 50); 
+            };
+            tempLoader.src = currentWorkImages[0];
+
+            // Preload the rest of the images for this specific work in the background
             work.images.forEach(src => { 
                 const img = new Image(); 
                 img.src = src; 
             });
-
-            currentWorkImages = work.images;
-            currentCarouselIndex = 0;
-            
-            document.getElementById('carousel-main-image').src = currentWorkImages[currentCarouselIndex];
-            document.getElementById('carousel-main-image').classList.remove('fade-out');
-            
-            updateCarouselDOM();
-
-            document.getElementById('works-list-view').style.display = 'none';
-            const detailView = document.getElementById('work-detail-view');
-            detailView.style.display = 'block';
-            document.getElementById('progress-container').style.display = 'block';
-            detailView.scrollTop = 0;
         }
-
         function changeImage(direction) {
             const carouselImg = document.getElementById('carousel-main-image');
             
@@ -446,6 +460,15 @@
             document.getElementById('work-detail-view').style.display = 'none';
             document.getElementById('progress-container').style.display = 'none';
             document.getElementById('works-list-view').style.display = 'block';
+            
+            // NEW: Fade the image out and erase it so it doesn't flash next time
+            const carouselImg = document.getElementById('carousel-main-image');
+            carouselImg.classList.add('fade-out');
+            
+            // Wait for the fade animation to finish, then clear the source
+            setTimeout(() => {
+                carouselImg.src = "";
+            }, 400);
         }
     </script>
 </body>
