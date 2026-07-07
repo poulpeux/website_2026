@@ -272,7 +272,7 @@
             }, 600);
         }
 
-        function startTimer() { clearInterval(slideshowTimer); slideshowTimer = setInterval(updateImage, 6000); }
+        function startTimer() { clearInterval(slideshowTimer); slideshowTimer = setInterval(updateImage, 2000); }
         document.getElementById('home-section').addEventListener('click', function() { clearInterval(slideshowTimer); updateImage(); startTimer(); });
         startTimer();
 
